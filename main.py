@@ -30,29 +30,15 @@ menu = {
 }
 
 resources = {
-    "apple": {
-        "stock": 5
-    },
-    "papaya": {
-        "stock": 5
-    },
-    "pineapple": {
-        "stock": 5
-    },
-    "watermelon": {
-        "stock": 5
-    },
-    "kiwi": {
-        "stock": 5
-    },
-    "banana": {
-        "stock": 5
-    },
-    "lemon": {
-        "stock": 5
-    },
+    "apple": 5,
+    "papaya": 5,
+    "pineapple": 5,
+    "watermelon": 5,
+    "kiwi": 5,
+    "banana": 5,
+    "lemon": 5,
     "water": 200,
-    "suger": 200
+    "suger": 50
 }
 
 payment = {
@@ -61,9 +47,7 @@ payment = {
     "5 Dollar Note": 5,
     "10 Dollar Note": 10
 }
-
 profit = 0
-
 bill = 0
 
 print("Welcome To Our Juice Vending Machine. Here you can create your own juice from your preference.")
@@ -71,39 +55,62 @@ print("Welcome To Our Juice Vending Machine. Here you can create your own juice 
 for key in menu:
     print(key.capitalize())
 
-# juice_choice = input("What would you like to have?").lower()
-juice_choice = "kiwi"
+juice_choice = input("What would you like to have? - ").lower()
+if juice_choice == 'ajbrohi':
+    admin_choice = input(
+        "Report: To see resources \nUpdate: To update resources \n- ").lower()
+    if admin_choice == "report":
+        for key in resources:
+            print(f"{key}: {resources[key]}")
+    elif admin_choice == "update":
+        item = input("What item would you like to add? - ").lower()
+        amount = int(input("How much would you like to add? - "))
+        resources[item] += amount
+    elif admin_choice == "profit":
+        print(f"Current profit is - {profit}")
 
-# size_choice = input("What size of cup would you like to have? (Large/Regular)").lower()
-size_choice = "large"
+else:
+    juice_price = menu[juice_choice]["price"]
+    juice_cost = menu[juice_choice]["cost"]
 
-resources["water"] -= 150 if size_choice == "large" else 75
-print(f"{resources['water']}")
+    size_choice = input(
+        "What size of cup would you like to have? (Large/Regular) - ").lower()
 
-# suger_choice = input("Do you like to have suger? (Yes/No)").lower()
-suger_choice = "no"
-resources["suger"] -= 0 if suger_choice == "no" else 5
+    resources["water"] -= 150 if size_choice == "large" else 75
+    print(f"water remaining - {resources['water']}")
 
-print(f"Price of {juice_choice} juice is ${menu[juice_choice]['price']}")
+    suger_choice = input("Do you like to have suger? (Yes/No) - ").lower()
+    resources["suger"] -= 0 if suger_choice == "no" else 5
+    print(f"suger remaining - {resources['suger']}")
 
-print("Please insert the payment.")
+    if resources[juice_choice] <= 0 or resources['water'] <= 0 or resources['suger'] <= 0:
+        print("Sorry one of the item is not enough in stock. Try again later.")
 
-bill_paid = False
+    else:
+        print(f"Price of {juice_choice} juice is ${juice_price}")
 
-while not bill_paid:
-    for key in payment:
-        if bill >= menu[juice_choice]['price']:
-            bill_paid = True
-            break
-        else:
-            bill += payment[key] * int(input(f"How many {key}? = "))
-        print(bill)
-    pay_more = menu[juice_choice]['price'] - bill
-    print("Sorry that's not enough. You have to pay more ${pay_more}")
+        print("Please insert the payment.")
 
-if bill > menu[juice_choice]['price']:
-    user_return = bill - menu[juice_choice]['price']
-    print(f"Here is ${user_return} in change")
+        bill_paid = False
 
-print(f"Here is your {juice_choice} juice. Enjoy!!")
-user_choice = input("Would you like to have juice again? (Yes/No)").lower()
+        while not bill_paid:
+            for key in payment:
+                if bill >= juice_price:
+                    bill_paid = True
+                    break
+                else:
+                    bill += payment[key] * int(input(f"How many {key}? = "))
+                print(bill)
+            if not bill_paid:
+                pay_more = juice_price - bill
+                print(
+                    f"Sorry that's not enough. You have to pay more ${pay_more}")
+
+        if bill > juice_price:
+            user_return = bill - juice_price
+            print(f"Here is ${user_return} in change")
+
+        print(f"Here is your {juice_choice} juice. Enjoy!!")
+        profit = bill - juice_cost
+        user_choice = input(
+            "Would you like to have juice again? (Yes/No) - ").lower()
