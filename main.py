@@ -3,11 +3,14 @@ from art import logo, admin_logo
 
 
 def print_menu():
+    """Print the key from menu dictionary by capitalizing each"""
     for key in menu:
         print(key.capitalize())
 
 
 def admin():
+    """Display the admin panel and provide options to see resources, update resources,
+    see current profit, cash out the profit, and log out."""
     global machine_run, profit
     log_out = False
 
@@ -40,14 +43,18 @@ Off: Logout
 
 
 def get_cost(juice_choice):
+    """Takes a juice choice as input and returns the cost of that juice item from the menu dictionary."""
     return menu[juice_choice]["cost"]
 
 
 def get_price(juice_choice):
+    """Takes a juice choice as input and returns the price of that juice item from the menu dictionary."""
     return menu[juice_choice]["price"]
 
 
 def update_resources(size_choice, suger_choice):
+    """Updates the resources dictionary based on the size and sugar choice of the juice.
+    Returns True if all resources are sufficient, and False otherwise."""
     resources["water"] -= 150 if size_choice == "large" else 75
     # print(f"water remaining - {resources['water']}")
     resources["suger"] -= 5 if suger_choice == "yes" else 0
@@ -60,6 +67,12 @@ def update_resources(size_choice, suger_choice):
 
 
 def bill_payment(juice_price):
+    """Takes the price of the juice as input and prompts the user to pay the bill using coins or dollars.
+    Updates the bill variable until it is greater than or equal to the juice price.
+
+    Args:
+        juice_price (int): price of juice from menu dictionary
+    """
     global bill
     bill_paid = False
 
@@ -78,11 +91,17 @@ def bill_payment(juice_price):
 
 
 def update_profit(juice_cost, juice_price):
+    """Updates the profit variable based on the cost and price of the juice."""
     global profit
     profit = profit + (juice_price - juice_cost)
 
 
 def juice_processing(juice_choice, juice_price, juice_cost):
+    """Processes the juice order
+    Prompts the user to select the cup size and sugar choice, and updates the resources accordingly.
+    Prompts the user to pay the bill, and if the bill is greater than the juice price, returns the remaining amount as change.
+    Updates the profit, and prompts
+    """
     global bill, machine_run
 
     print(f"Price of {juice_choice} juice is ${juice_price}")
@@ -107,6 +126,11 @@ def juice_processing(juice_choice, juice_price, juice_cost):
 
 
 def user(juice_choice):
+    """Process the user's juice order and update resources and profit.
+
+    Args:
+        juice_choice (str): The user's choice of juice, must match a key in the menu dictionary.
+    """
     global machine_run
     juice_price = get_price(juice_choice)
     juice_cost = get_cost(juice_choice)
