@@ -1,4 +1,5 @@
 from data import menu, resources, payment
+from art import logo, admin_logo
 
 
 def print_menu():
@@ -7,11 +8,12 @@ def print_menu():
 
 
 def admin():
-    global machine_run
+    global machine_run, profit
     log_out = False
 
     while not log_out:
-        print("\nWelcome to admin panel. Type to execute the options.")
+        print(admin_logo)
+        print("Welcome to admin panel. Type to execute the options.")
         admin_choice = input(
             """Report: To see resources
 Update: To update resources
@@ -27,7 +29,6 @@ Off: Logout
             amount = int(input("How much would you like to add? - "))
             resources[item] += amount
         elif admin_choice == "profit":
-            global profit
             print(f"Current profit is - {profit}")
         elif admin_choice == "cash out":
             print(f"Current profit is - {profit}")
@@ -69,16 +70,16 @@ def bill_payment(juice_price):
                 break
             else:
                 bill += payment[key] * int(input(f"How many {key}? = "))
-            print(bill)
+            print(f"You paid - {bill}")
         if not bill_paid:
             pay_more = juice_price - bill
             print(
                 f"Sorry that's not enough. You have to pay more ${pay_more}")
 
 
-def update_profit(juice_cost):
-    global profit, bill
-    profit = profit + (bill - juice_cost)
+def update_profit(juice_cost, juice_price):
+    global profit
+    profit = profit + (juice_price - juice_cost)
 
 
 def juice_processing(juice_choice, juice_price, juice_cost):
@@ -96,12 +97,13 @@ def juice_processing(juice_choice, juice_price, juice_cost):
 
     print(f"Here is your {juice_choice} juice. Enjoy!!")
 
-    update_profit(juice_cost)
+    update_profit(juice_cost, juice_price)
 
     user_choice = input(
         "Would you like to have juice again? (Yes/No) - ").lower()
     if user_choice == 'no':
         machine_run = False
+        print("Thank you for using our program.")
 
 
 def user(juice_choice):
@@ -112,14 +114,11 @@ def user(juice_choice):
     size_choice = input(
         "What size of cup would you like to have? (Large/Regular) - ").lower()
     suger_choice = input("Do you like to have suger? (Yes/No) - ").lower()
-    enough_resources = update_resources(size_choice, suger_choice)
-
-    if not enough_resources:
+    if update_resources(size_choice, suger_choice):
+        juice_processing(juice_choice, juice_price, juice_cost)
+    else:
         print("Sorry one of the item is not enough in stock. Try again later.")
         machine_run = False
-    else:
-        juice_processing(juice_choice, juice_price,
-                         juice_cost)
 
 
 profit = 0
@@ -127,7 +126,9 @@ bill = 0
 machine_run = True
 
 while machine_run:
-    print("\nWelcome To Our Juice Vending Machine. Here you can create your own juice from your preference.")
+    print(logo)
+
+    print("Welcome To Our Juice Vending Machine. Here you can create your own juice from your preference.")
 
     print_menu()
 

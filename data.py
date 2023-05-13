@@ -37,8 +37,8 @@ resources = {
     "kiwi": 5,
     "banana": 5,
     "lemon": 5,
-    "water": 200,
-    "suger": 50
+    "water": 500,
+    "suger": 30
 }
 
 payment = {
