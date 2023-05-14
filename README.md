@@ -1,21 +1,26 @@
 # Create-Your-Juice Machine
 
-This project is a simple Python program that allows you to create your own juice machine. The program takes in a list of fruits and vegetables, and then it prints out a recipe for a juice that includes all of the ingredients.
+Learn to create a juice bar program with Python. Order your favorite juice, pay the bill, and receive your order. Create an admin panel to update resources and check profits.
+
+## Play Now
+
+Experience the thrill of playing the game - click the [Repl.it Link](https://replit.com/@Al-JunaedIslam/Virtual-Juice-Bar?v=1) and play now!
 
 ## Program's Features
 
-- The program can be used to create juices with any combination of fruits and vegetables.
-- The program prints out a recipe for each juice that includes the ingredients, the amount of each ingredient, and the steps for making the juice.
-- The program is easy to use and can be run on any computer with Python installed.
+- The program allows users to order their favorite juice from a menu and pay the bill using coins or dollars.
+- The program updates the resources dictionary based on the user's juice size and sugar choice.
+- The program keeps track of the profit and displays it to the admin.
+- The program has an admin panel by inputting a secret code that allows the admin to see, update resources and check profits and cash out them.
 
 ## Python Features Used
 
 The program uses the following Python features:
 
-- Lists
-- For loops
-- If statements
-- Print statements
+- Dictionaries
+- `while-for` loops
+- `if-elif-else` statements
+- `print` statements
 
 ## Learn More
 
