@@ -1,164 +1,31 @@
-from data import menu, resources, payment
-from art import logo, admin_logo
+from menu import Menu
+from juice_maker import JuiceMaker
+from money_machine import MoneyMachine
+from admin import Admin
+from art import logo
 
+menu = Menu()
+juice_maker = JuiceMaker()
+money_machine = MoneyMachine()
+admin = Admin()
 
-def print_menu():
-    """Print the key from menu dictionary by capitalizing each"""
-    for key in menu:
-        print(key.capitalize())
-
-
-def admin():
-    """Display the admin panel and provide options to see resources, update resources,
-    see current profit, cash out the profit, and log out."""
-    global machine_run, profit
-    log_out = False
-
-    while not log_out:
-        print(admin_logo)
-        print("Welcome to admin panel. Type to execute the options.")
-        admin_choice = input(
-            """Report: To see resources
-Update: To update resources
-Profit: To see current profit
-Cash Out: To cash out the profit
-Off: Logout
-- """).lower()
-        if admin_choice == "report":
-            for key in resources:
-                print(f"{key}: {resources[key]}")
-        elif admin_choice == "update":
-            item = input("What item would you like to add? - ").lower()
-            amount = int(input("How much would you like to add? - "))
-            resources[item] += amount
-        elif admin_choice == "profit":
-            print(f"Current profit is - {profit}")
-        elif admin_choice == "cash out":
-            print(f"Current profit is - {profit}")
-            profit = 0
-            print(f"Profit cashed out. Now balance is {profit}")
-        else:
-            log_out = True
-            machine_run = False
-
-
-def get_cost(juice_choice):
-    """Takes a juice choice as input and returns the cost of that juice item from the menu dictionary."""
-    return menu[juice_choice]["cost"]
-
-
-def get_price(juice_choice):
-    """Takes a juice choice as input and returns the price of that juice item from the menu dictionary."""
-    return menu[juice_choice]["price"]
-
-
-def update_resources(size_choice, suger_choice):
-    """Updates the resources dictionary based on the size and sugar choice of the juice.
-    Returns True if all resources are sufficient, and False otherwise."""
-    resources["water"] -= 150 if size_choice == "large" else 75
-    # print(f"water remaining - {resources['water']}")
-    resources["suger"] -= 5 if suger_choice == "yes" else 0
-    # print(f"suger remaining - {resources['suger']}")
-    return (
-        resources[juice_choice] >= 0
-        and resources['water'] >= 0
-        and resources['suger'] >= 0
-    )
-
-
-def bill_payment(juice_price):
-    """Takes the price of the juice as input and prompts the user to pay the bill using coins or dollars.
-    Updates the bill variable until it is greater than or equal to the juice price.
-
-    Args:
-        juice_price (int): price of juice from menu dictionary
-    """
-    global bill
-    bill_paid = False
-
-    while not bill_paid:
-        for key in payment:
-            if bill >= juice_price:
-                bill_paid = True
-                break
-            else:
-                bill += payment[key] * int(input(f"How many {key}? = "))
-            print(f"You paid - {bill}")
-        if not bill_paid:
-            pay_more = juice_price - bill
-            print(
-                f"Sorry that's not enough. You have to pay more ${pay_more}")
-
-
-def update_profit(juice_cost, juice_price):
-    """Updates the profit variable based on the cost and price of the juice."""
-    global profit
-    profit = profit + (juice_price - juice_cost)
-
-
-def juice_processing(juice_choice, juice_price, juice_cost):
-    """Processes the juice order
-    Prompts the user to select the cup size and sugar choice, and updates the resources accordingly.
-    Prompts the user to pay the bill, and if the bill is greater than the juice price, returns the remaining amount as change.
-    Updates the profit, and prompts
-    """
-    global bill, machine_run
-
-    print(f"Price of {juice_choice} juice is ${juice_price}")
-
-    print("Please pay the bill by inserting coins or dollars.")
-
-    bill_payment(juice_price)
-
-    if bill > juice_price:
-        user_return = bill - juice_price
-        print(f"Here is ${user_return} in change")
-
-    print(f"Here is your {juice_choice} juice. Enjoy!!")
-
-    update_profit(juice_cost, juice_price)
-
-    user_choice = input(
-        "Would you like to have juice again? (Yes/No) - ").lower()
-    if user_choice == 'no':
-        machine_run = False
-        print("Thank you for using our program.")
-
-
-def user(juice_choice):
-    """Process the user's juice order and update resources and profit.
-
-    Args:
-        juice_choice (str): The user's choice of juice, must match a key in the menu dictionary.
-    """
-    global machine_run
-    juice_price = get_price(juice_choice)
-    juice_cost = get_cost(juice_choice)
-
-    size_choice = input(
-        "What size of cup would you like to have? (Large/Regular) - ").lower()
-    suger_choice = input("Do you like to have suger? (Yes/No) - ").lower()
-    if update_resources(size_choice, suger_choice):
-        juice_processing(juice_choice, juice_price, juice_cost)
-    else:
-        print("Sorry one of the item is not enough in stock. Try again later.")
-        machine_run = False
-
-
-profit = 0
-bill = 0
 machine_run = True
 
 while machine_run:
+    options = menu.get_items()
     print(logo)
-
     print("Welcome To Our Juice Vending Machine. Here you can create your own juice from your preference.")
+    print(f"Menu -\n{options}")
+    flavor_choice = input("What would you like to have? - ").lower()
 
-    print_menu()
+    if flavor_choice == 'ajbrohi':
+        admin.admin_process()
 
-    juice_choice = input("What would you like to have? - ").lower()
-
-    if juice_choice == 'ajbrohi':
-        admin()
     else:
-        user(juice_choice)
+        juice = menu.find_drink(flavor_choice)
+        size_choice = input(
+            "What size of cup would you like to have? (Large/Regular) - ").lower()
+        sugar_choice = input("Do you like to have suger? (Yes/No) - ").lower()
+
+        if juice_maker.is_resource_sufficient(juice.name) and money_machine.make_payment(juice.cost, juice.price):
+            juice_maker.make_juice(juice.name, size_choice, sugar_choice)
